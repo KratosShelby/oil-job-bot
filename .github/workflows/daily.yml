@@ -1,0 +1,51 @@
+name: Neft-qaz vakansiya yoxlaması
+
+on:
+  schedule:
+    - cron: "0 4 * * *"      # hər gün 08:00 Bakı vaxtı (04:00 UTC)
+  workflow_dispatch:          # əl ilə işə salmaq üçün
+    inputs:
+      window:
+        description: "Tarix aralığı: boş burax (avtomatik) və ya Past 24 hours / Past Week / Past Month"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: job-bot
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Asılılıqları quraşdır
+        run: pip install -r requirements.txt
+
+      - name: Botu işə sal
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          WINDOW: ${{ github.event.inputs.window }}
+        run: python main.py
+
+      - name: Vəziyyəti (data/jobs.json) repoya yaz
+        if: always()
+        run: |
+          git config user.name "job-bot"
+          git config user.email "job-bot@users.noreply.github.com"
+          git add data/jobs.json || true
+          git diff --cached --quiet || (git commit -m "jobs yeniləndi" && git push)
