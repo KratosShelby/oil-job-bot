@@ -1,0 +1,107 @@
+# ============================================================
+#  Neft-qaz vakansiya botu - ayarlar
+#  Bu faylı dəyişib GitHub-da saxlayanda bot növbəti işləmədə yeni ayarı götürür.
+# ============================================================
+
+# Apify aktoru (sənin işlətdiyin ucuz aktor)
+actor: worldunboxer/rapid-linkedin-scraper
+
+location: Azerbaijan
+
+# Tarix aralığı.
+#  - İlk işləmə (data/jobs.json yoxdursa): son 1 ay
+#  - Sonrakı işləmələr: son 1 həftə. Eyni elan ID ilə təkrar göndərilmir,
+#    həftəlik pəncərə isə bir gün sistem xəta versə belə elanın itməməsini təmin edir.
+first_run_window: "Past Month"
+daily_window: "Past Week"
+
+# Azərbaycanda neft-qaza aid hər cür rol, intern və proqram açar sözləri.
+# Zibil elanları LLM süzür, ona görə geniş yazmaq problem deyil.
+role_keywords:
+  - oil and gas
+  - petroleum engineer
+  - drilling engineer
+  - reservoir engineer
+  - production engineer
+  - petrophysicist
+  - wellsite geologist
+  - mud logger
+  - HSE engineer
+  - QHSE
+  - subsea engineer
+  - piping engineer
+  - pipeline engineer
+  - process engineer
+  - offshore
+  - onshore
+  - refinery
+  - petrochemical
+  - upstream
+  - petroleum
+  - neft
+  - qaz
+  - internship
+  - intern
+  - trainee
+  - graduate programme
+  - young talents
+  - talent programme
+  - early careers
+  - təcrübə proqramı
+  - стажер
+
+# Şirkət adları (balaca və böyük). Siyahını istədiyin vaxt genişləndir.
+companies:
+  - SOCAR
+  - Azneft
+  - SOCAR Polymer
+  - Azerikimya
+  - SOCAR Midstream Operations
+  - Heydar Aliyev Oil Refinery
+  - Azerigaz
+  - bp
+  - Equinor
+  - TotalEnergies
+  - ExxonMobil
+  - SLB
+  - Halliburton
+  - Baker Hughes
+  - Weatherford
+  - NOV
+  - Expro
+  - Nabors
+  - Oceaneering
+  - Saipem
+  - Petrofac
+  - McDermott
+  - Wood
+  - Worley
+  - KBR
+  - TechnipFMC
+  - Technip Energies
+  - Subsea 7
+  - Aker Solutions
+  - KCA Deutag
+  - Caspian Drilling Company
+  - Airswift
+  - Petroplan
+  - PD&MS Group
+  - Umid Babek Operating Company
+  - Anotech
+  - GE Vernova
+
+company_chunk: 8            # hər Apify işləməsində neçə şirkət
+jobs_entries_roles: 1000    # açar söz axtarışında maksimum nəticə
+jobs_entries_companies: 300 # hər şirkət qrupunda maksimum nəticə
+max_cost_per_run_usd: 1.0   # hər Apify işləməsi üçün təhlükəsizlik limiti
+
+# LLM (OpenRouter)
+llm_model: anthropic/claude-haiku-5.5
+llm_description_chars: 2500
+
+# Saxlama
+retention_days: 30          # jobs.json-dan silmə müddəti
+seen_days: 90               # təkrar göndərməmək üçün ID yaddaşı
+
+# Telegram
+daily_summary: true         # hər işləmənin sonunda 1 sətirlik "sistem işləyir" mesajı
